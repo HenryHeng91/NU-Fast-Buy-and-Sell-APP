@@ -11,6 +11,10 @@
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+use Illuminate\Support\Facades\Route;
+
+Route::get('/', ['uses' => 'MainController@index', 'as' => 'index']);
+Route::post('/login', 'MainController@login');
+Route::get('/logout', 'MainController@logout');
+Route::get('/test/{accessToken}/{intervalSec}', 'MainController@test');
+

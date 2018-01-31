@@ -1,95 +1,65 @@
-<!doctype html>
-<html lang="{{ app()->getLocale() }}">
-    <head>
-        <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
+<!DOCTYPE html>
+<html>
 
-        <title>Laravel</title>
+<head>
+    <meta charset="UTF-8">
+    <title>Account Kit (Laravel)</title>
+    <link href='https://fonts.googleapis.com/css?family=Titillium+Web:400,300,600' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" href="{{ asset('css/normalize.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/style.css') }}">
+</head>
 
-        <!-- Fonts -->
-        <link href="https://fonts.googleapis.com/css?family=Raleway:100,600" rel="stylesheet" type="text/css">
-
-        <!-- Styles -->
-        <style>
-            html, body {
-                background-color: #fff;
-                color: #636b6f;
-                font-family: 'Raleway', sans-serif;
-                font-weight: 100;
-                height: 100vh;
-                margin: 0;
-            }
-
-            .full-height {
-                height: 100vh;
-            }
-
-            .flex-center {
-                align-items: center;
-                display: flex;
-                justify-content: center;
-            }
-
-            .position-ref {
-                position: relative;
-            }
-
-            .top-right {
-                position: absolute;
-                right: 10px;
-                top: 18px;
-            }
-
-            .content {
-                text-align: center;
-            }
-
-            .title {
-                font-size: 84px;
-            }
-
-            .links > a {
-                color: #636b6f;
-                padding: 0 25px;
-                font-size: 12px;
-                font-weight: 600;
-                letter-spacing: .1rem;
-                text-decoration: none;
-                text-transform: uppercase;
-            }
-
-            .m-b-md {
-                margin-bottom: 30px;
-            }
-        </style>
-    </head>
-    <body>
-        <div class="flex-center position-ref full-height">
-            @if (Route::has('login'))
-                <div class="top-right links">
-                    @auth
-                        <a href="{{ url('/home') }}">Home</a>
-                    @else
-                        <a href="{{ route('login') }}">Login</a>
-                        <a href="{{ route('register') }}">Register</a>
-                    @endauth
+<body>
+    <div class="form">
+        <ul class="tab-group">
+            <li class="tab active"><a href="#signup">Phone</a></li>
+            <li class="tab"><a href="#login">Email</a></li>
+        </ul>
+        <form action="/login" method="post" id="form">
+            <input type="hidden" name="_token" id="_token" value="{{ csrf_token() }}">
+            <input type="hidden" name="code" id="code" />
+        </form>
+        <div class="tab-content">
+            <div id="signup">
+                <h1>Account Kit</h1>
+                <div>
+                    <div class="top-row">
+                        <div class="field-wrap">
+                            <label>
+                                &nbsp; Country Code<span class="req">*</span>
+                            </label>
+                            <input type="text" id="country" value="+" required autocomplete="off" />
+                        </div>
+                        <div class="field-wrap">
+                            <label>
+                                Number<span class="req">*</span>
+                            </label>
+                            <input type="text" id="phone" required autocomplete="off" />
+                        </div>
+                    </div>
+                    <button onclick="smsLogin()" class="button button-block" />Get Started</button>
                 </div>
-            @endif
-
-            <div class="content">
-                <div class="title m-b-md">
-                    Laravel
-                </div>
-
-                <div class="links">
-                    <a href="https://laravel.com/docs">Documentation</a>
-                    <a href="https://laracasts.com">Laracasts</a>
-                    <a href="https://laravel-news.com">News</a>
-                    <a href="https://forge.laravel.com">Forge</a>
-                    <a href="https://github.com/laravel/laravel">GitHub</a>
+            </div>
+            <div id="login">
+                <h1>Account Kit</h1>
+                <div>
+                    <div class="field-wrap">
+                        <label>
+                            Email Address<span class="req">*</span>
+                        </label>
+                        <input type="email" id="email" required autocomplete="off" />
+                    </div>
+                    <button type="submit" class="button button-block" onclick="emailLogin()"/>Log In</button>
                 </div>
             </div>
         </div>
-    </body>
+        <!-- tab-content -->
+    </div>
+    <!-- /form -->
+    <script type="text/javascript" src="https://sdk.accountkit.com/en_US/sdk.js"></script>
+    <script src="{{asset('js/ack.js')}}"></script>
+    <script src='{{asset('js/jquery.min.js')}}'></script>
+    <script src="{{asset('js/index.js')}}"></script>
+</body>
+
 </html>
