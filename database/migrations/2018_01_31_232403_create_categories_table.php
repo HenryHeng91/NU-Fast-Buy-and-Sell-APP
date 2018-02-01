@@ -18,7 +18,7 @@ class CreateCategoriesTable extends Migration
             $table->string('category_name')->unique();
             $table->string('category_name_khmer');
             $table->integer('category_parent')->nullable();
-            $table->string('category_image', 250)->default('default.jpg');
+            $table->string('category_image')->default('default.jpg');
             $table->unique(['category_name', 'category_name_khmer']);
             $table->timestamps();
         });
