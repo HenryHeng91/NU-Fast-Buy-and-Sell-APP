@@ -5,6 +5,9 @@ namespace App\Http\Middleware;
 use App\Models\User;
 use Closure;
 use GuzzleHttp\Client as GuzzleHttpClient;
+use http\Exception;
+use Illuminate\Support\Facades\Response;
+use GuzzleHttp\Exception\RequestException as GuzzleException;
 
 
 class ApiAuth
@@ -15,6 +18,7 @@ class ApiAuth
     protected $endPointUrl;
     public $userAccessToken;
     protected $refreshInterval;
+
 
     public function __construct()
     {
@@ -36,27 +40,35 @@ class ApiAuth
     {
         $auth_code = $request->header('auth_code');
         if (!$auth_code) {
-            return abort('401', 'Missing Authorization Code!');
-        }
-        $this->login($auth_code);
-        $userData = $this->getData();
-        $user = User::where('accountkit_id', $userData['userId'])->first();
-        if (user == null){
-            $newUser = new User();
-            $newUser->accountkit_id = $userData['userId'];
-            $newUser->first_name = 'New User';
-            $newUser->last_name = rand();
-            $newUser->email = $userData['email'];
-            $newUser->phone = $userData['phone'];
-            $newUser->gender = 'male';
-            $newUser->access_token = $userData['userAccessToken'];
-            $newUser->status = 1;
-            $newUser->save();
-            $user = $newUser;
+            return Response::json(['error'=>'Missing Authorization Code!'], 401);
         }
 
+        try{
+            $this->login($auth_code);
+            $userData = $this->getData();
+            $user = User::where('accountkit_id', $userData['userId'])->first();
+            if ($user == null){
+                $newUser = new User();
+                $newUser->accountkit_id = $userData['userId'];
+                $newUser->first_name = 'New User';
+                $newUser->last_name = rand();
+                $newUser->email = $userData['email'];
+                $newUser->phone = $userData['phone'];
+                $newUser->gender = 'male';
+                $newUser->access_token = $userData['userAccessToken'];
+                $newUser->status = 1;
+                $newUser->save();
+                $user = $newUser;
+            }
 
-        return $next($request);
+            $request->attributes->add('NU_ECOMMERCE_USER_DATA', $user);
+            return $next($request);
+
+        }catch (Exception $e){
+            return Response::json(['error'=>'Unauthenticated'], 401);
+        }catch (GuzzleException $guzzleException){
+            return Response::json(['error'=>'Unauthenticated', 'debug'=>$guzzleException->getMessage()], 401);
+        }
     }
 
     public function login($authCode){

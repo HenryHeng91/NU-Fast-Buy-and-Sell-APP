@@ -16,3 +16,8 @@ use Illuminate\Http\Request;
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
+
+Route::middleware('apiAuth')->get('/test', function (Request $request){
+   $user = $request->all('NU_ECOMMERCE_USER_DATA');
+   return $user;
+});
