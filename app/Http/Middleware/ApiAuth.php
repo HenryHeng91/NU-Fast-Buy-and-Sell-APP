@@ -5,9 +5,7 @@ namespace App\Http\Middleware;
 use App\Models\User;
 use Closure;
 use GuzzleHttp\Client as GuzzleHttpClient;
-use http\Exception;
 use Illuminate\Support\Facades\Response;
-use GuzzleHttp\Exception\RequestException as GuzzleException;
 
 
 class ApiAuth
@@ -38,15 +36,23 @@ class ApiAuth
      */
     public function handle($request, Closure $next)
     {
-        $auth_code = $request->header('auth_code');
-        if (!$auth_code) {
-            return Response::json(['error'=>'Missing Authorization Code!'], 401);
-        }
-
         try{
-            $this->login($auth_code);
+            if (!config('accountkit.allowUserAccessToken')){
+                $auth_code = $request->header('auth_code');
+                if (!$auth_code) {
+                    return Response::json(['error'=>'Missing Authorization Code!'], 401);
+                }
+                $this->login($auth_code);
+            } else {
+                $access_token = $request->header('access_token');
+                if (!$access_token){
+                    return Response::json(['error'=>'Missing Access Token!'], 401);
+                }
+                $this->userAccessToken = $access_token;
+            }
+
             $userData = $this->getData();
-            $user = User::where('accountkit_id', $userData['userId'])->first();
+            $user = User::where('accountkit_id', $userData['userId'])->with(['posts', 'posts.category', 'posts.category.parentCategory'])->first();
             if ($user == null){
                 $newUser = new User();
                 $newUser->accountkit_id = $userData['userId'];
@@ -60,14 +66,11 @@ class ApiAuth
                 $newUser->save();
                 $user = $newUser;
             }
-
-            $request->attributes->add('NU_ECOMMERCE_USER_DATA', $user);
+            $request->merge(['NU_ECOMMERCE_USER' => $user]);
             return $next($request);
 
-        }catch (Exception $e){
-            return Response::json(['error'=>'Unauthenticated'], 401);
-        }catch (GuzzleException $guzzleException){
-            return Response::json(['error'=>'Unauthenticated', 'debug'=>$guzzleException->getMessage()], 401);
+        } catch (\Exception $e){
+            return Response::json(['error'=>'Unauthenticated', 'debug'=>$e->getMessage()], 401);
         }
     }
 

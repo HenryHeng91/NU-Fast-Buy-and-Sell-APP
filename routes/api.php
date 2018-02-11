@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Route;
 
 /*
 |--------------------------------------------------------------------------
@@ -18,6 +19,8 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 });
 
 Route::middleware('apiAuth')->get('/test', function (Request $request){
-   $user = $request->all('NU_ECOMMERCE_USER_DATA');
+   $user = $request->input('NU_ECOMMERCE_USER');
    return $user;
 });
+
+Route::post('/logout', 'MainController@logout_acc');
