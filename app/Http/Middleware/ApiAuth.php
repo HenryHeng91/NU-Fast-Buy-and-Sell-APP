@@ -65,8 +65,11 @@ class ApiAuth
                 $newUser->status = 1;
                 $newUser->save();
                 $user = $newUser;
+                $request->merge(['NU_ECOMMERCE_USER' => ['userId' => $user->id, 'status' => 'new' ]]);
+            } else {
+                $request->merge(['NU_ECOMMERCE_USER' => ['userId' => $user->id, 'status' => 'old' ]]);
             }
-            $request->merge(['NU_ECOMMERCE_USER' => $user]);
+
             return $next($request);
 
         } catch (\Exception $e){

@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -14,13 +15,13 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:api')->get('/user', function (Request $request) {
-    return $request->user();
+/* Get single user's information and data
+ * Determine specific user using accessToken
+ * Authenicate with apiAuth
+ * */
+Route::group(['middleware' => 'apiAuth', 'prefix' => 'user', 'namespace' => 'API'], function (){
+    Route::get('/', 'UserController@show')->name('index');
 });
 
-Route::middleware('apiAuth')->get('/test', function (Request $request){
-   $user = $request->input('NU_ECOMMERCE_USER');
-   return $user;
-});
 
 Route::post('/logout', 'MainController@logout_acc');
