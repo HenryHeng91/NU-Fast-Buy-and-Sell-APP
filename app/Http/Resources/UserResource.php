@@ -27,6 +27,8 @@ class UserResource extends Resource
             'city'          => $this->city,
             'profilePicture'  => $this->profile_pic,
             'role'          => Role::find($this->role)->role_name,
+            'totalPostsBuy'    => $this->totalPostsBuy,
+            'totalPostsSell'    => $this->totalPostsSell,
             'signUpDate'    => $this->created_at
         ];
     }
@@ -34,8 +36,9 @@ class UserResource extends Resource
     public function with($request)
     {
         return [
-            'links' => [
-                'self' => route('index')
+            'meta' => [
+                'timestamp' => now()->toDateTimeString(),
+                'link' => route('index'),
             ]
         ];
     }

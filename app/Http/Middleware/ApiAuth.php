@@ -56,8 +56,8 @@ class ApiAuth
             if ($user == null){
                 $newUser = new User();
                 $newUser->accountkit_id = $userData['userId'];
-                $newUser->first_name = 'New User';
-                $newUser->last_name = rand();
+                $newUser->first_name = '';
+                $newUser->last_name = '';
                 $newUser->email = $userData['email'];
                 $newUser->phone = $userData['phone'];
                 $newUser->gender = 'male';

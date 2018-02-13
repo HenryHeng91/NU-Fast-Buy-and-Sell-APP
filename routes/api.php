@@ -23,5 +23,9 @@ Route::group(['middleware' => 'apiAuth', 'prefix' => 'user', 'namespace' => 'API
     Route::get('/', 'UserController@show')->name('index');
 });
 
+Route::group(['middleware' => 'apiAuth', 'prefix' => 'users', 'namespace' => 'API'], function (){
+    Route::get('/', 'UserController@index')->name('index');
+});
+
 
 Route::post('/logout', 'MainController@logout_acc');

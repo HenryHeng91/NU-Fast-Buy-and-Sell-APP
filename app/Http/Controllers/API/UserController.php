@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Resources\UserResource;
+use App\Http\Resources\UsersResource;
 use App\Models\User;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -12,11 +13,19 @@ class UserController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return \Illuminate\Http\Response
+     * @return UsersResource
      */
     public function index()
     {
-        //
+        $users = User::withCount([
+            'posts as totalPostsBuy' => function($posts){
+                $posts->where('post_type', 'buy');
+            },
+            'posts as totalPostsSell' => function($posts){
+                $posts->where('post_type', 'sell');
+            }
+        ])->paginate();
+        return new UsersResource($users);
     }
 
     /**
@@ -49,7 +58,14 @@ class UserController extends Controller
     public function show(Request $request)
     {
         $userId = $request->input('NU_ECOMMERCE_USER');
-        $user = User::find($userId['userId']);
+        $user = User::withCount([
+            'posts as totalPostsBuy' => function($posts){
+                $posts->where('post_type', 'buy');
+            },
+            'posts as totalPostsSell' => function($posts){
+                $posts->where('post_type', 'sell');
+            }
+        ])->find($userId['userId']);
         return new UserResource($user);
     }
 
