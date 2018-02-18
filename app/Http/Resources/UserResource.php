@@ -7,6 +7,7 @@ use Illuminate\Http\Resources\Json\Resource;
 
 class UserResource extends Resource
 {
+
     /**
      * Transform the resource into an array.
      *
@@ -25,7 +26,7 @@ class UserResource extends Resource
             'gender'        => $this->gender,
             'address'       => $this->address,
             'city'          => $this->city,
-            'profilePicture'  => $this->profile_pic,
+            'profilePicture'  => asset(env('AVATAR_PATH')).'/'.$this->profile_pic,
             'role'          => Role::find($this->role)->role_name,
             'totalPostsBuy'    => $this->totalPostsBuy,
             'totalPostsSell'    => $this->totalPostsSell,

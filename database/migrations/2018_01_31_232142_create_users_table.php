@@ -23,7 +23,7 @@ class CreateUsersTable extends Migration
             $table->enum('gender', ['male', 'female']);
             $table->string('address')->nullable();
             $table->string('city')->nullable();
-            $table->string('profile_pic')->default('avatar.jpg');
+            $table->string('profile_pic')->default('avatar.png');
             $table->longText('access_token');
             $table->integer('status')->default(0);
             $table->integer('role')->default(1);
