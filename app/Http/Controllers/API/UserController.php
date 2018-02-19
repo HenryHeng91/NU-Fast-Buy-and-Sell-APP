@@ -57,7 +57,7 @@ class UserController extends Controller
      */
     public function show(Request $request)
     {
-        $userId = $request->input('NU_ECOMMERCE_USER');
+        $nu_user = $request->input('NU_ECOMMERCE_USER');
         $user = User::withCount([
             'posts as totalPostsBuy' => function($posts){
                 $posts->where('post_type', 'buy');
@@ -65,7 +65,7 @@ class UserController extends Controller
             'posts as totalPostsSell' => function($posts){
                 $posts->where('post_type', 'sell');
             }
-        ])->find($userId['userId']);
+        ])->find($nu_user['userId']);
         return new UserResource($user);
     }
 
@@ -85,11 +85,15 @@ class UserController extends Controller
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return UserResource
      */
-    public function update(Request $request, $id)
+    public function update(Request $request)
     {
-        //
+        $nu_user = $request->input('NU_ECOMMERCE_USER');
+        $user = User::find($nu_user['userId']);
+
+        $user->update($request->except('NU_ECOMMERCE_USER'));
+        return new UserResource($user);
     }
 
     /**

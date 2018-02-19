@@ -20,9 +20,11 @@ use App\Http\Controllers\API;
  * Determine specific user using accessToken
  * Authenicate with apiAuth
  * */
-Route::group(['middleware' => 'apiAuth', 'prefix' => 'user', 'namespace' => 'API'], function (){
+Route::group(['middleware' => 'apiAuth', 'prefix' => 'user', 'namespace' => 'API', 'name' => 'user.'], function (){
     Route::get('/', 'UserController@show')->name('index');
-    Route::post('/', 'UserController@')->name('index');
+    Route::put('/', 'UserController@update')->name('update');
+
+    //=====POSTS=====
     Route::get('/buys', 'PostBuyController@showUserPosts')->name('all-buys');
     Route::get('/buy/{id}', 'PostBuyController@show')->name('single-buy');
     Route::get('/sells', 'PostSellController@showUserPosts')->name('all-sells');
