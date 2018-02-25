@@ -38,13 +38,13 @@ class ApiAuth
     {
         try{
             if (!config('accountkit.allowUserAccessToken')){
-                $auth_code = $request->header('auth_code');
+                $auth_code = $request->header('auth-code');
                 if (!$auth_code) {
                     return Response::json(['error'=>'Missing Authorization Code!'], 401);
                 }
                 $this->login($auth_code);
             } else {
-                $access_token = $request->header('access_token');
+                $access_token = $request->header('access-token');
                 if (!$access_token){
                     return Response::json(['error'=>'Missing Access Token!'], 401);
                 }

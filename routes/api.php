@@ -37,19 +37,19 @@ Route::group(['middleware' => 'apiAuth', 'prefix' => 'user', 'namespace' => 'API
 
 //===== ALL USERS =====
 Route::group([ 'prefix' => 'users', 'namespace' => 'API', 'name' => 'user.'], function (){
-    Route::get('/users', 'UserController@index')->name('getAllUsers');
+    Route::get('/', 'UserController@index')->name('getAllUsers');
 });
 
 //===== ALL BUY POSTS =====
 Route::group([ 'prefix' => 'buys', 'namespace' => 'API', 'name' => 'buys.'], function (){
-    Route::get('/buys', 'PostBuyController@index')->name('getAllBuys');
-    Route::get('/buys/category/{catId}', 'PostBuyController@showAllByCategory')->name('getAllBuysByCat');
+    Route::get('/', 'PostBuyController@index')->name('getAllBuys');
+    Route::get('/category/{catId}', 'PostBuyController@showAllByCategory')->name('getAllBuysByCat');
 });
 
 //===== ALL SELL POSTS =====
 Route::group([ 'prefix' => 'sells', 'namespace' => 'API', 'name' => 'sells.'], function (){
-    Route::get('/sells', 'PostSellController@index')->name('getAllSells');
-    Route::get('/sells/category/{catId}', 'PostSellController@index')->name('getAllSellsByCat');
+    Route::get('/', 'PostSellController@index')->name('getAllSells');
+    Route::get('/category/{catId}', 'PostSellController@index')->name('getAllSellsByCat');
 });
 
 
