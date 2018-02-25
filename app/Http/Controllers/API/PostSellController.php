@@ -14,7 +14,7 @@ class PostSellController extends Controller
 
     public function __construct()
     {
-        $this->posts = Post::with('user', 'category')->where('post_type', 'sell');
+        $this->posts = Post::with('category')->where('post_type', 'sell');
     }
 
     /**
@@ -25,6 +25,16 @@ class PostSellController extends Controller
     public function index()
     {
         return new PostsResource($this->posts->paginate());
+    }
+
+    /**
+     * Display a listing of the resource by categoryId.
+     *
+     * @return PostsResource
+     */
+    public function showAllByCategory($catId)
+    {
+        return new PostsResource($this->posts->where('category_id', $catId)->paginate());
     }
 
     /**
@@ -59,7 +69,7 @@ class PostSellController extends Controller
         $user = $request->input('NU_ECOMMERCE_USER');
         $post = $this->posts->where(['user_id' => $user['userId'], 'id' => $id])->first();
         if(!$post){
-            return PostResource::error(400, 'No data', "No data found for post with id $id.");
+            return MakeHttpResponse(400, 'No data', "No data found for post with id $id.");
         }
         return new PostResource($post);
     }
@@ -75,6 +85,19 @@ class PostSellController extends Controller
         $posts = $this->posts->where('user_id', $userId)->paginate();
         return new PostsResource($posts);
     }
+
+    /**
+     * Display the all posts by category for specific user.
+     *
+     * @return PostsResource
+     */
+    public function showUserPostsByCategory(Request $request, $catId)
+    {
+        $userId = $request->input('NU_ECOMMERCE_USER');
+        $posts = $this->posts->where(['category_id' => $catId, 'user_id' => $userId])->paginate();
+        return new PostsResource($posts);
+    }
+
 
 
     /**

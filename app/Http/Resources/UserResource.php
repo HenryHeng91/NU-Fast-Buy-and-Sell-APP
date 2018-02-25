@@ -28,6 +28,7 @@ class UserResource extends Resource
             'city'          => $this->city,
             'profilePicture'  => asset(env('AVATAR_PATH')).'/'.$this->profile_pic,
             'role'          => Role::find($this->role)->role_name,
+            'status'          => $this->status ? 'new' : 'old',
             'totalPostsBuy'    => $this->totalPostsBuy,
             'totalPostsSell'    => $this->totalPostsSell,
             'signUpDate'    => $this->created_at

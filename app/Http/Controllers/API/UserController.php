@@ -4,6 +4,7 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Resources\UserResource;
 use App\Http\Resources\UsersResource;
+use App\Models\Post;
 use App\Models\User;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -47,6 +48,21 @@ class UserController extends Controller
     public function store(Request $request)
     {
         //
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param  \Illuminate\Http\Request $request
+     * @return void
+     */
+    public function createPost(Request $request)
+    {
+        $nu_user = $request->input('NU_ECOMMERCE_USER');
+        $post = new Post($request->except('NU_ECOMMERCE_USER'));
+        $user = User::find($nu_user['userId']);
+        $a = $user->posts()->save($post);
+
     }
 
     /**
@@ -102,8 +118,15 @@ class UserController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Request $request)
     {
-        //
+        $nu_user = $request->input('NU_ECOMMERCE_USER');
+        $user = User::find($nu_user['userId']);
+
+        if ($user->delete()){
+          return MakeHttpResponse(204,'Success', "Success delete user with id $nu_user[userId]");
+        }
+
+        return MakeHttpResponse(400,'Failed delete', "Failed to delete user with id $nu_user[userId]");
     }
 }
