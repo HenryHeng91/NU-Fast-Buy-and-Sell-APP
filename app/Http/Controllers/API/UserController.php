@@ -2,12 +2,15 @@
 
 namespace App\Http\Controllers\API;
 
+use App\Http\Resources\PostResource;
 use App\Http\Resources\UserResource;
 use App\Http\Resources\UsersResource;
 use App\Models\Post;
 use App\Models\User;
+use Illuminate\Foundation\Testing\Concerns\MakesHttpRequests;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Validator;
 
 class UserController extends Controller
 {
@@ -59,10 +62,16 @@ class UserController extends Controller
     public function createPost(Request $request)
     {
         $nu_user = $request->input('NU_ECOMMERCE_USER');
-        $post = new Post($request->except('NU_ECOMMERCE_USER'));
         $user = User::find($nu_user['userId']);
-        $a = $user->posts()->save($post);
-
+        $input = $request->except('NU_ECOMMERCE_USER');
+        $post = new Post($input);
+        $validate = Validator::make($input, $post->getValidationArray());
+        if ($validate->passes()){
+            $newpost = $user->posts()->save($post);
+            return new PostResource($newpost);
+        } else {
+            return MakeHttpResponse(400, 'Fail', $validate->errors()->all());
+        }
     }
 
     /**
