@@ -26,11 +26,12 @@ Route::group(['middleware' => 'apiAuth', 'prefix' => 'user', 'namespace' => 'API
 
     //===== USER'S POSTS =====
     Route::post('/post', 'UserController@createPost')->name('add-post');
+    Route::delete('/post/{postIds}', 'UserController@deletePost')->name('delete-post');
+
 
     Route::get('/buys', 'PostBuyController@showUserPosts')->name('all-buys');
     Route::get('/buys/category/{catId}', 'PostBuyController@showUserPostsByCategory')->name('all-buys-by-cat');
     Route::get('/buy/{id}', 'PostBuyController@show')->name('single-buy');
-    Route::delete('/buy/{id}', 'PostBuyController@destroy')->name('delete-buy');
     Route::put('/buy/{id}', 'PostBuyController@update')->name('update-buy');
 
     Route::get('/sells', 'PostSellController@showUserPosts')->name('all-sells');

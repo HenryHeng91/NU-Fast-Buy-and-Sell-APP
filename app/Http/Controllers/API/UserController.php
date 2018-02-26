@@ -76,6 +76,29 @@ class UserController extends Controller
     }
 
     /**
+     * Delete a post of a user.
+     *
+     * @param  \Illuminate\Http\Request $request
+     * @return \Illuminate\Http\Response
+     */
+    public function deletePost(Request $request, $postIds)
+    {
+        $nu_user = $request->input('NU_ECOMMERCE_USER');
+        $user = User::find($nu_user['userId']);
+        $posts = trim($postIds) ? explode(',', trim($postIds)) : [];
+        if (count($posts) > 0){
+            $postsToBeDeleted = $user->posts->whereIn('id', $posts);
+            if (count($postsToBeDeleted) > 0){
+                Post::destroy($posts);
+                return MakeHttpResponse(204, 'Success', "Post Id $postIds deleted.");
+            }
+            return MakeHttpResponse(400, 'No data', "No data found for post with id $postIds.");
+        }
+        return MakeHttpResponse(400, 'No data', "No data found for post with id $postIds.");
+
+    }
+
+    /**
      * Display the specified resource.
      *
      * @param  int  $id

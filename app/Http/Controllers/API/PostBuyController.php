@@ -131,11 +131,6 @@ class PostBuyController extends Controller
      */
     public function destroy(Request $request, $id)
     {
-//        $user = $request->input('NU_ECOMMERCE_USER');
-//        $post = $this->posts->where(['user_id' => $user['userId'], 'id' => $id])->first();
-//        if(!$post){
-//            return MakeHttpResponse(400, 'No data', "No data found for post with id $id.");
-//        }
-//        return new PostResource($post);
+
     }
 }
