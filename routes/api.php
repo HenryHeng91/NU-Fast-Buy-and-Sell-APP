@@ -22,14 +22,17 @@ Route::group(['middleware' => 'apiAuth', 'prefix' => 'user', 'namespace' => 'API
     //===== MANAGE USER INFO =====
     Route::get('/', 'UserController@show')->name('index');
     Route::put('/', 'UserController@update')->name('update');
-    Route::post('/post', 'UserController@createPost')->name('add-post');
     Route::delete('/delete-account', 'UserController@destroy')->name('delete-account');
 
     //===== USER'S POSTS =====
+    Route::post('/post', 'UserController@createPost')->name('add-post');
+
     Route::get('/buys', 'PostBuyController@showUserPosts')->name('all-buys');
     Route::get('/buys/category/{catId}', 'PostBuyController@showUserPostsByCategory')->name('all-buys-by-cat');
     Route::get('/buy/{id}', 'PostBuyController@show')->name('single-buy');
-    Route::delete('/buy/{id}', 'PostBuyController@update')->name('delete-buy');
+    Route::delete('/buy/{id}', 'PostBuyController@destroy')->name('delete-buy');
+    Route::put('/buy/{id}', 'PostBuyController@update')->name('update-buy');
+
     Route::get('/sells', 'PostSellController@showUserPosts')->name('all-sells');
     Route::get('/sells/category/{catId}', 'PostSellController@showUserPostsByCategory')->name('all-sells-by-cat');
     Route::get('/sell/{id}', 'PostSellController@show')->name('single-sell');

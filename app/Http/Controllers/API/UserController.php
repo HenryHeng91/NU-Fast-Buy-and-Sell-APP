@@ -151,7 +151,7 @@ class UserController extends Controller
         $page = $request->input('page', 1);
         $user = User::find($nu_user['userId']);
 
-        return new PostsResource(collect($user->favorites)->forPage($page, 15));
+        return new PostsResource(collect($user->favorites)->sortBy('created_at')->reverse()->forPage($page, 15));
     }
 
     /**

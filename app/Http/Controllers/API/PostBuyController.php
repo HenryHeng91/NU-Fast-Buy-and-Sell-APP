@@ -25,7 +25,7 @@ class PostBuyController extends Controller
      */
     public function index()
     {
-        return new PostsResource($this->posts->paginate());
+        return new PostsResource($this->posts->orderByDesc('created_at')->paginate());
     }
 
     /**
@@ -35,7 +35,7 @@ class PostBuyController extends Controller
      */
     public function showAllByCategory($catId)
     {
-        return new PostsResource($this->posts->where('category_id', $catId)->paginate());
+        return new PostsResource($this->posts->where('category_id', $catId)->orderByDesc('created_at')->paginate());
     }
 
     /**
@@ -83,7 +83,7 @@ class PostBuyController extends Controller
     public function showUserPosts(Request $request)
     {
         $userId = $request->input('NU_ECOMMERCE_USER');
-        $posts = $this->posts->where('user_id', $userId)->paginate();
+        $posts = $this->posts->where('user_id', $userId)->orderByDesc('created_at')->paginate();
         return new PostsResource($posts);
     }
 
@@ -95,7 +95,7 @@ class PostBuyController extends Controller
     public function showUserPostsByCategory(Request $request, $catId)
     {
         $userId = $request->input('NU_ECOMMERCE_USER');
-        $posts = $this->posts->where(['category_id' => $catId, 'user_id' => $userId])->paginate();
+        $posts = $this->posts->where(['category_id' => $catId, 'user_id' => $userId])->orderByDesc('created_at')->paginate();
         return new PostsResource($posts);
     }
 
@@ -129,8 +129,13 @@ class PostBuyController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Request $request, $id)
     {
-        //
+//        $user = $request->input('NU_ECOMMERCE_USER');
+//        $post = $this->posts->where(['user_id' => $user['userId'], 'id' => $id])->first();
+//        if(!$post){
+//            return MakeHttpResponse(400, 'No data', "No data found for post with id $id.");
+//        }
+//        return new PostResource($post);
     }
 }
