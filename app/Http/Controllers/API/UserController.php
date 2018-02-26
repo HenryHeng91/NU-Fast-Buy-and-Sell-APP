@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Resources\PostResource;
+use App\Http\Resources\PostsResource;
 use App\Http\Resources\UserResource;
 use App\Http\Resources\UsersResource;
 use App\Models\Post;
@@ -137,5 +138,37 @@ class UserController extends Controller
         }
 
         return MakeHttpResponse(400,'Failed delete', "Failed to delete user with id $nu_user[userId]");
+    }
+
+    /**
+     * Display all user's favorite posts.
+     *
+     * @return PostsResource
+     */
+    public function getFavtorites(Request $request)
+    {
+        $nu_user = $request->input('NU_ECOMMERCE_USER');
+        $page = $request->input('page', 1);
+        $user = User::find($nu_user['userId']);
+
+        return new PostsResource(collect($user->favorites)->forPage($page, 15));
+    }
+
+    /**
+     * Delete user's favorite posts.
+     *
+     * @return PostsResource
+     */
+    public function removeFavtorites(Request $request, $postIds)
+    {
+        $nu_user = $request->input('NU_ECOMMERCE_USER');
+        $user = User::find($nu_user['userId']);
+        $postsToRemove = explode(',', $postIds);
+        if (Count($postsToRemove) > 0){
+            if ($user->favorites()->detach($postsToRemove)){
+                return MakeHttpResponse(204, 'Success', 'Successfully delete favorite post with Id'.$postIds);
+            }
+        }
+        return MakeHttpResponse(400, 'Error', 'Error deleting favorite posts');
     }
 }

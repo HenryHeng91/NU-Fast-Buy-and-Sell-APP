@@ -17,6 +17,11 @@ class Post extends Model
         return $this->belongsTo(Category::class);
     }
 
+    public function favorite_users()
+    {
+        return $this->belongsToMany('App\Models\User', 'favorites', 'post_id', 'user_id');
+    }
+
     public function getValidationArray(){
         return [
             'title'         => 'required|max:255',
@@ -32,4 +37,5 @@ class Post extends Model
             'contact_address_map_coordinate' => 'required|max:255',
         ];
     }
+
 }

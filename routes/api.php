@@ -29,10 +29,16 @@ Route::group(['middleware' => 'apiAuth', 'prefix' => 'user', 'namespace' => 'API
     Route::get('/buys', 'PostBuyController@showUserPosts')->name('all-buys');
     Route::get('/buys/category/{catId}', 'PostBuyController@showUserPostsByCategory')->name('all-buys-by-cat');
     Route::get('/buy/{id}', 'PostBuyController@show')->name('single-buy');
-    Route::delete('/buy/{id}', 'PostBuyController@show')->name('single-buy');
+    Route::delete('/buy/{id}', 'PostBuyController@update')->name('delete-buy');
     Route::get('/sells', 'PostSellController@showUserPosts')->name('all-sells');
     Route::get('/sells/category/{catId}', 'PostSellController@showUserPostsByCategory')->name('all-sells-by-cat');
     Route::get('/sell/{id}', 'PostSellController@show')->name('single-sell');
+
+    //===== USER'S FAVORITE POSTS =====
+    Route::get('/favotites', 'UserController@getFavtorites')->name('favorites');
+    Route::delete('/favotites/{postIds}', 'UserController@removeFavtorites')->name('delete-favorites');
+
+
 });
 
 //===== ALL USERS =====

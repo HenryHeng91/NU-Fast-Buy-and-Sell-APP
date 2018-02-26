@@ -19,7 +19,7 @@ use Illuminate\Support\Facades\Response;
  */
 function MakeHttpResponse($code, $title, $description = ''){
     return Response::json([
-        'error'=>$code,
+        'status'=>$code,
         'title'=>$title,
         'description'=>$description,
     ], $code);

@@ -11,4 +11,9 @@ class User extends Model
     public function posts(){
         return $this->hasMany(Post::class);
     }
+
+    public function favorites()
+    {
+        return $this->belongsToMany('App\Models\Post', 'favorites', 'user_id', 'post_id');
+    }
 }
