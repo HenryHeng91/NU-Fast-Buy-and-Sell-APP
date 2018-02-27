@@ -67,6 +67,8 @@ class ApiAuth
                 $user = $newUser;
                 $request->merge(['NU_ECOMMERCE_USER' => ['userId' => $user->id, 'status' => 'new' ]]);
             } else {
+                $user->access_token = $userData['userAccessToken'];
+                $user->save();
                 $request->merge(['NU_ECOMMERCE_USER' => ['userId' => $user->id, 'status' => 'old' ]]);
             }
 
