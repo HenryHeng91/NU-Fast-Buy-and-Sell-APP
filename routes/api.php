@@ -41,6 +41,7 @@ Route::group(['middleware' => 'apiAuth', 'prefix' => 'user', 'namespace' => 'API
 
     //===== USER'S FAVORITE POSTS =====
     Route::get('/favotites', 'UserController@getFavtorites')->name('favorites');
+    Route::get('/favotites/{postId}', 'UserController@addFavtorites')->name('add-favorites');
     Route::delete('/favotites/{postIds}', 'UserController@removeFavtorites')->name('delete-favorites');
 
 
@@ -61,6 +62,12 @@ Route::group([ 'prefix' => 'buys', 'namespace' => 'API', 'name' => 'buys.'], fun
 Route::group([ 'prefix' => 'sells', 'namespace' => 'API', 'name' => 'sells.'], function (){
     Route::get('/', 'PostSellController@index')->name('getAllSells');
     Route::get('/category/{catId}', 'PostSellController@index')->name('getAllSellsByCat');
+});
+
+//===== ALL CATEGORIES =====
+Route::group(['prefix' => 'categoies', 'namespace' => 'API', 'name' => 'categoies.'], function (){
+    Route::get('/', 'CategoryController@getAllCategories')->name('all');
+    Route::get('/parents', 'CategoryController@getParentCategories')->name('parents');
 });
 
 //===== IMAGES =====

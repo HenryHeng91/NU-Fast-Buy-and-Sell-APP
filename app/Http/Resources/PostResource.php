@@ -29,6 +29,7 @@ class PostResource extends Resource
             'contactEmail'  => $this->contact_email,
             'contactAddress'  => $this->contact_address,
             'contactMapCoordinate'  => $this->contact_address_map_coordinate,
+            'favoriteCount'  => $this->favorite_users()->count(),
             'status'        => $this->status,
             'createdDate'   => $this->created_at,
             'updatedDate'   => $this->updated_at,

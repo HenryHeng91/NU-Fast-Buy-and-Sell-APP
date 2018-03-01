@@ -206,7 +206,24 @@ class UserController extends Controller
         $page = $request->input('page', 1);
         $user = User::find($nu_user['userId']);
 
-        return new PostsResource(collect($user->favorites)->sortBy('created_at')->reverse()->forPage($page, 15));
+        return new PostsResource(collect($user->favorites)->sortBy('created_at')->reverse()->forPage($page, 14));
+    }
+
+    /**
+     * Assign post to user's favorite list.
+     *
+     * @return PostsResource
+     */
+    public function addFavtorites(Request $request, $postId)
+    {
+        $nu_user = $request->input('NU_ECOMMERCE_USER');
+        $page = $request->input('page', 1);
+        $user = User::find($nu_user['userId']);
+        if (!Post::find($postId)){
+            return MakeHttpResponse(400, 'Not found', "Post with ID $postId not found.");
+        }
+        $user->favorites()->attach($postId);
+        return new PostsResource(collect($user->favorites)->sortBy('created_at')->reverse()->forPage($page, 14));
     }
 
     /**
