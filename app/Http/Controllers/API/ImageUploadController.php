@@ -54,15 +54,10 @@ class ImageUploadController extends Controller
      * @param Request $request
      * @return PostResource
      */
-    public function uploadPostImage(Request $request, $postId){
+    public function uploadPostImage(Request $request){
         $nu_user = $request->input('NU_ECOMMERCE_USER');
         $user = User::find($nu_user['userId']);
-        $post = $user->posts()->where('id', $postId);
         
-        if ($post == null){
-            return MakeHttpResponse(400, 'Post not found', "PostId $postId not found or belong to userId $nu_user[userId]");
-        }
-
         if (!$request->has('image_file')){
             return MakeHttpResponse(400, 'Fail', "No input name 'image_file' found!");
         }
@@ -84,9 +79,7 @@ class ImageUploadController extends Controller
                 return MakeHttpResponse(400, 'Fail', $exception->getMessage());
             }
         }
-        $post->product_image = $post->product_image.implode(';', $imageFileNames);
-        $post->save();
-        return new PostResource($post);
+        return MakeHttpResponse(200, 'Success', implode(';', $imageFileNames));
     }
 
 

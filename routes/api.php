@@ -66,7 +66,7 @@ Route::group([ 'prefix' => 'sells', 'namespace' => 'API', 'name' => 'sells.'], f
 //===== IMAGES =====
 Route::group([ 'middleware' => 'apiAuth', 'prefix' => 'images', 'namespace' => 'API', 'name' => 'images.'], function (){
     Route::post('/profile', 'ImageUploadController@uploadProfileImage')->name('profile');
-    Route::post('/post/{postId}', 'ImageUploadController@uploadPostImage')->name('post');
+    Route::post('/post', 'ImageUploadController@uploadPostImage')->name('post');
 });
 
 
