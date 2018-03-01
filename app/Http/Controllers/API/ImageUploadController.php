@@ -57,8 +57,8 @@ class ImageUploadController extends Controller
     public function uploadPostImage(Request $request, $postId){
         $nu_user = $request->input('NU_ECOMMERCE_USER');
         $user = User::find($nu_user['userId']);
-        $post = $user->post->where('id', $postId);
-
+        $post = $user->posts()->where('id', $postId);
+        
         if ($post == null){
             return MakeHttpResponse(400, 'Post not found', "PostId $postId not found or belong to userId $nu_user[userId]");
         }
@@ -78,7 +78,7 @@ class ImageUploadController extends Controller
                 return MakeHttpResponse(400, 'Fail', $validator->errors()->all());
             }
             try{
-                $fileName = $this->saveImageToPath($fileInput, $destinationPath, 'post-');
+                $fileName = $this->saveImageToPath($item, $destinationPath, 'post-');
                 array_push($imageFileNames, $fileName);
             }catch (Exception $exception){
                 return MakeHttpResponse(400, 'Fail', $exception->getMessage());
@@ -98,7 +98,6 @@ class ImageUploadController extends Controller
      * @return string
      */
     private function saveImageToPath($imageFile, $destinationPath, $imagePrefix = ''){
-        $type = gettype($imageFile);
         $filename = $imagePrefix.uniqid().'.'.$imageFile->getClientOriginalExtension();
         $imageFile->move($destinationPath, $filename);
         return $filename;
