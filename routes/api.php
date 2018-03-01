@@ -27,6 +27,7 @@ Route::group(['middleware' => 'apiAuth', 'prefix' => 'user', 'namespace' => 'API
     //===== USER'S POSTS =====
     Route::post('/post', 'UserController@createPost')->name('add-post');
     Route::delete('/post/{postIds}', 'UserController@deletePost')->name('delete-post');
+    Route::put('/post/{postId}', 'UserController@updatePost')->name('update-post');
 
 
     Route::get('/buys', 'PostBuyController@showUserPosts')->name('all-buys');
@@ -60,6 +61,12 @@ Route::group([ 'prefix' => 'buys', 'namespace' => 'API', 'name' => 'buys.'], fun
 Route::group([ 'prefix' => 'sells', 'namespace' => 'API', 'name' => 'sells.'], function (){
     Route::get('/', 'PostSellController@index')->name('getAllSells');
     Route::get('/category/{catId}', 'PostSellController@index')->name('getAllSellsByCat');
+});
+
+//===== IMAGES =====
+Route::group([ 'middleware' => 'apiAuth', 'prefix' => 'images', 'namespace' => 'API', 'name' => 'images.'], function (){
+    Route::post('/profile', 'ImageUploadController@uploadProfileImage')->name('profile');
+    Route::post('/post/{postId}', 'ImageUploadController@uploadPostImage')->name('post');
 });
 
 

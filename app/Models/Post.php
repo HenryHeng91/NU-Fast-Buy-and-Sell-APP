@@ -37,7 +37,6 @@ class Post extends Model
             'contact_phone' => 'required|max:30',
             'contact_email' => 'required|max:190',
             'contact_address' => 'required|max:255',
-            'contact_address_map_coordinate' => 'required|max:255',
         ];
     }
 

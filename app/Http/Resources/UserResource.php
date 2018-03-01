@@ -25,6 +25,7 @@ class UserResource extends Resource
             'phone'         => $this->phone,
             'gender'        => $this->gender,
             'address'       => $this->address,
+            'map_coordinate'=> $this->contact_address_map_coordinate,
             'city'          => $this->city,
             'profilePicture'  => asset(env('AVATAR_PATH')).'/'.$this->profile_pic,
             'role'          => Role::find($this->role)->role_name,

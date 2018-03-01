@@ -12,6 +12,7 @@ use Illuminate\Foundation\Testing\Concerns\MakesHttpRequests;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Validator;
+use Mockery\Exception;
 
 class UserController extends Controller
 {
@@ -95,7 +96,36 @@ class UserController extends Controller
             return MakeHttpResponse(400, 'No data', "No data found for post with id $postIds.");
         }
         return MakeHttpResponse(400, 'No data', "No data found for post with id $postIds.");
+    }
 
+    /**
+     * Update a post of a user.
+     *
+     * @param  \Illuminate\Http\Request $request
+     * @return \Illuminate\Http\Response
+     */
+    public function updatePost(Request $request, $postId)
+    {
+        $nu_user = $request->input('NU_ECOMMERCE_USER');
+        $user = User::find($nu_user['userId']);
+        $post = $user->posts->where('id', $postId)->first();
+
+        if (!$post){
+            return MakeHttpResponse(400, 'Post not found!',
+                "Post with ID $postId not found from user ID $nu_user[userId]");
+        }
+
+        $input = $request->except('NU_ECOMMERCE_USER');
+        $validate = Validator::make($input, $post->getValidationArray());
+        if ($validate->passes()){
+            try{
+                $post->update($input);
+                return new PostResource($post);
+            }catch (Exception $exception){
+                return MakeHttpResponse(400, 'Error', $exception->getMessage());
+            }
+        }
+        return MakeHttpResponse(400, 'Fail', $validate->errors()->all());
     }
 
     /**
@@ -142,6 +172,8 @@ class UserController extends Controller
         $user = User::find($nu_user['userId']);
 
         $user->update($request->except('NU_ECOMMERCE_USER'));
+        $user->status = 0;
+        $user->save();
         return new UserResource($user);
     }
 
