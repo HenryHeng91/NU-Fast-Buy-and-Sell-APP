@@ -25,7 +25,7 @@ class PostBuyController extends Controller
      */
     public function index()
     {
-        return new PostsResource($this->posts->orderByDesc('created_at')->paginate());
+        return new PostsResource($this->posts->orderByDesc('created_at')->paginate(14));
     }
 
     /**
@@ -35,7 +35,7 @@ class PostBuyController extends Controller
      */
     public function showAllByCategory($catId)
     {
-        return new PostsResource($this->posts->where('category_id', $catId)->orderByDesc('created_at')->paginate());
+        return new PostsResource($this->posts->where('category_id', $catId)->orderByDesc('created_at')->paginate(14));
     }
 
     /**
@@ -83,7 +83,7 @@ class PostBuyController extends Controller
     public function showUserPosts(Request $request)
     {
         $userId = $request->input('NU_ECOMMERCE_USER');
-        $posts = $this->posts->where('user_id', $userId)->orderByDesc('created_at')->paginate();
+        $posts = $this->posts->where('user_id', $userId)->orderByDesc('created_at')->paginate(14);
         return new PostsResource($posts);
     }
 
@@ -95,7 +95,7 @@ class PostBuyController extends Controller
     public function showUserPostsByCategory(Request $request, $catId)
     {
         $userId = $request->input('NU_ECOMMERCE_USER');
-        $posts = $this->posts->where(['category_id' => $catId, 'user_id' => $userId])->orderByDesc('created_at')->paginate();
+        $posts = $this->posts->where(['category_id' => $catId, 'user_id' => $userId])->orderByDesc('created_at')->paginate(14);
         return new PostsResource($posts);
     }
 

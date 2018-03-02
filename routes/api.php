@@ -76,5 +76,10 @@ Route::group([ 'middleware' => 'apiAuth', 'prefix' => 'images', 'namespace' => '
     Route::post('/post', 'ImageUploadController@uploadPostImage')->name('post');
 });
 
+//===== SEARCH =====
+Route::group([ 'prefix' => 'search', 'namespace' => 'API', 'name' => 'search.'], function (){
+    Route::get('/', 'SearchController@index')->name('searchAll');
+});
+
 
 Route::post('/logout', 'MainController@logout_acc');
