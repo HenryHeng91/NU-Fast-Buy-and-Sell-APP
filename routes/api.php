@@ -79,6 +79,8 @@ Route::group([ 'middleware' => 'apiAuth', 'prefix' => 'images', 'namespace' => '
 //===== SEARCH =====
 Route::group([ 'prefix' => 'search', 'namespace' => 'API', 'name' => 'search.'], function (){
     Route::get('/', 'SearchController@index')->name('searchAll');
+    Route::get('/buy', 'SearchController@searchBuy')->name('searchBuy');
+    Route::get('/sell', 'SearchController@searchSell')->name('searchSell');
 });
 
 

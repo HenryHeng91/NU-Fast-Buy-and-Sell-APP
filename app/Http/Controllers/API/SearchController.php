@@ -25,4 +25,38 @@ class SearchController extends Controller
             ->orderByDesc('created_at');
         return new SearchesResource($posts->paginate(14));
     }
+    
+    /**
+     * Display a listing of the search buy posts.
+     *
+     * @return SearchesResource
+     */
+    public function searchBuy(Request $request)
+    {
+        $string = $request->query('s');
+        $posts = Post::withCount('favorite_users')
+            ->where('post_type', 'buy')
+            ->where('title', 'like', "%$string%")
+            ->orWhere('description', 'like', "%$string%")
+            ->orderByDesc('favorite_users_count')
+            ->orderByDesc('created_at');
+        return new SearchesResource($posts->paginate(14));
+    }
+
+    /**
+     * Display a listing of the search sell posts.
+     *
+     * @return SearchesResource
+     */
+    public function searchSell(Request $request)
+    {
+        $string = $request->query('s');
+        $posts = Post::withCount('favorite_users')
+            ->where('post_type', 'sell')
+            ->where('title', 'like', "%$string%")
+            ->orWhere('description', 'like', "%$string%")
+            ->orderByDesc('favorite_users_count')
+            ->orderByDesc('created_at');
+        return new SearchesResource($posts->paginate(14));
+    }
 }
