@@ -23,8 +23,8 @@ class PostResource extends Resource
             'description'   => $this->description,
             'price'         => array(['min'=> $this->price_from, 'max'=>$this->price_to]),
             'category'      => $this->category,
-            'productImages' => trim($this->product_image) ? explode(';', trim($this->product_image)) : [] ,
-            'contactName'  => $this->contact_name,
+            'productImages' => trim($this->product_image) ? $this->mapImagePath(explode(';', trim($this->product_image))) : [] ,
+            'contactName'   => $this->contact_name,
             'contactPhone'  => $this->contact_phone,
             'contactEmail'  => $this->contact_email,
             'contactAddress'  => $this->contact_address,
@@ -45,4 +45,9 @@ class PostResource extends Resource
             ]
         ];
     }
+
+    private function mapImagePath($arr){
+        return array_map(function($i){return asset(env('IMAGE_PATH')).'/'.$i;}, $arr);
+    }
+
 }
