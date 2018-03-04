@@ -127,7 +127,7 @@ class UserController extends Controller
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request $request
-     * @return void
+     * @return PostResource
      */
     public function createPost(Request $request)
     {
@@ -156,9 +156,9 @@ class UserController extends Controller
         $user = User::find($nu_user['userId']);
         $posts = trim($postIds) ? explode(',', trim($postIds)) : [];
         if (count($posts) > 0){
-            $postsToBeDeleted = $user->posts->whereIn('id', $posts);
-            if (count($postsToBeDeleted) > 0){
-                Post::destroy($posts);
+            $deleteResult = Post::withExpired()->where('user_id', $user->id)
+                ->whereIn('id', $posts)->delete();
+            if ($deleteResult > 0){
                 return MakeHttpResponse(204, 'Success', "Post Id $postIds deleted.");
             }
             return MakeHttpResponse(400, 'No data', "No data found for post with id $postIds.");
@@ -170,13 +170,13 @@ class UserController extends Controller
      * Update a post of a user.
      *
      * @param  \Illuminate\Http\Request $request
-     * @return \Illuminate\Http\Response
+     * @return PostResource
      */
     public function updatePost(Request $request, $postId)
     {
         $nu_user = $request->input('NU_ECOMMERCE_USER');
         $user = User::find($nu_user['userId']);
-        $post = $user->posts->where('id', $postId)->first();
+        $post = Post::withExpired()->where([['user_id', $user->id], ['id', $postId]])->first();
 
         if (!$post){
             return MakeHttpResponse(400, 'Post not found!',

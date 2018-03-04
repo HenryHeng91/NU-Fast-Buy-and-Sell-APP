@@ -82,7 +82,9 @@ class PostSellController extends Controller
     public function showUserPosts(Request $request)
     {
         $userId = $request->input('NU_ECOMMERCE_USER');
-        $posts = $this->posts->where('user_id', $userId)->orderByDesc('created_at')->paginate();
+        $posts = Post::withExpired()->with('category')->where('user_id', $userId['userId'])
+            ->where('post_type', 'sell')
+            ->orderByDesc('created_at')->paginate();
         return new PostsResource($posts);
     }
 
