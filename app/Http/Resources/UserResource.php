@@ -27,11 +27,12 @@ class UserResource extends Resource
             'address'       => $this->address,
             'map_coordinate'=> $this->contact_address_map_coordinate,
             'city'          => $this->city,
-            'profilePicture'  => asset(env('AVATAR_PATH')).'/'.$this->profile_pic,
+            'profilePicture'=> asset(env('AVATAR_PATH')).'/'.$this->profile_pic,
+            'description'   => $this->description,
             'role'          => Role::find($this->role)->role_name,
-            'status'          => $this->status ? 'new' : 'old',
-            'totalPostsBuy'    => $this->totalPostsBuy,
-            'totalPostsSell'    => $this->totalPostsSell,
+            'status'        => $this->status ? 'new' : 'old',
+            'totalPostsBuy' => $this->totalPostsBuy,
+            'totalPostsSell'=> $this->totalPostsSell,
             'signUpDate'    => $this->created_at
         ];
     }
