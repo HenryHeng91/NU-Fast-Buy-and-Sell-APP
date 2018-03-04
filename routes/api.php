@@ -29,6 +29,9 @@ Route::group(['middleware' => 'apiAuth', 'prefix' => 'user', 'namespace' => 'API
     Route::delete('/post/{postIds}', 'UserController@deletePost')->name('delete-post');
     Route::put('/post/{postId}', 'UserController@updatePost')->name('update-post');
 
+    Route::get('/post/expire', 'UserController@getExpired')->name('expired-post');
+    Route::get('/post/active/{postId}', 'UserController@setActive')->name('active-post');
+    Route::get('/post/maylike', 'UserController@getMayLike')->name('may-like');
 
     Route::get('/buys', 'PostBuyController@showUserPosts')->name('all-buys');
     Route::get('/buys/category/{catId}', 'PostBuyController@showUserPostsByCategory')->name('all-buys-by-cat');
@@ -40,9 +43,11 @@ Route::group(['middleware' => 'apiAuth', 'prefix' => 'user', 'namespace' => 'API
     Route::get('/sell/{id}', 'PostSellController@show')->name('single-sell');
 
     //===== USER'S FAVORITE POSTS =====
-    Route::get('/favotites', 'UserController@getFavtorites')->name('favorites');
-    Route::get('/favotites/{postId}', 'UserController@addFavtorites')->name('add-favorites');
-    Route::delete('/favotites/{postIds}', 'UserController@removeFavtorites')->name('delete-favorites');
+    Route::get('/favorites', 'UserController@getFavorites')->name('favorites');
+    Route::get('/favorites/top', 'UserController@getTopFavorites')->name('favorites');
+    Route::get('/favorites/{postId}', 'UserController@addFavorites')->name('add-favorites');
+    Route::delete('/favorites/{postIds}', 'UserController@removeFavorites')->name('delete-favorites');
+
 
 
 });

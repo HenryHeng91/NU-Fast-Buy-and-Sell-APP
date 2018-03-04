@@ -36,11 +36,13 @@ class SearchController extends Controller
         $string = $request->query('s');
         $posts = Post::withCount('favorite_users')
             ->where('post_type', 'buy')
-            ->where('title', 'like', "%$string%")
-            ->orWhere('description', 'like', "%$string%")
+            ->where(function ($query) use ($string){
+                $query->where('title', 'like', "%$string%")
+                    ->orWhere('description', 'like', "%$string%");
+            })
             ->orderByDesc('favorite_users_count')
             ->orderByDesc('created_at');
-        return new SearchesResource($posts->paginate(14));
+        return new SearchesResource($posts->paginate());
     }
 
     /**
@@ -53,10 +55,12 @@ class SearchController extends Controller
         $string = $request->query('s');
         $posts = Post::withCount('favorite_users')
             ->where('post_type', 'sell')
-            ->where('title', 'like', "%$string%")
-            ->orWhere('description', 'like', "%$string%")
+            ->where(function ($query) use ($string){
+                $query->where('title', 'like', "%$string%")
+                    ->orWhere('description', 'like', "%$string%");
+            })
             ->orderByDesc('favorite_users_count')
             ->orderByDesc('created_at');
-        return new SearchesResource($posts->paginate(14));
+        return new SearchesResource($posts->paginate());
     }
 }

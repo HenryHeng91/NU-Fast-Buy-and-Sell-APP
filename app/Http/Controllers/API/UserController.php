@@ -11,6 +11,7 @@ use App\Models\User;
 use Illuminate\Foundation\Testing\Concerns\MakesHttpRequests;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Mockery\Exception;
 
@@ -53,6 +54,73 @@ class UserController extends Controller
     public function store(Request $request)
     {
         //
+    }
+
+    /**
+     * Display the specified resource.
+     *
+     * @param  int  $id
+     * @return UserResource
+     */
+    public function show(Request $request)
+    {
+        $nu_user = $request->input('NU_ECOMMERCE_USER');
+        $user = User::withCount([
+            'posts as totalPostsBuy' => function($posts){
+                $posts->where('post_type', 'buy');
+            },
+            'posts as totalPostsSell' => function($posts){
+                $posts->where('post_type', 'sell');
+            }
+        ])->find($nu_user['userId']);
+        return new UserResource($user);
+    }
+
+    /**
+     * Show the form for editing the specified resource.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function edit($id)
+    {
+        //
+    }
+
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int  $id
+     * @return UserResource
+     */
+    public function update(Request $request)
+    {
+        $nu_user = $request->input('NU_ECOMMERCE_USER');
+        $user = User::find($nu_user['userId']);
+
+        $user->update($request->except('NU_ECOMMERCE_USER'));
+        $user->status = 0;
+        $user->save();
+        return new UserResource($user);
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function destroy(Request $request)
+    {
+        $nu_user = $request->input('NU_ECOMMERCE_USER');
+        $user = User::find($nu_user['userId']);
+
+        if ($user->delete()){
+          return MakeHttpResponse(204,'Success', "Success delete user with id $nu_user[userId]");
+        }
+
+        return MakeHttpResponse(400,'Failed delete', "Failed to delete user with id $nu_user[userId]");
     }
 
     /**
@@ -129,78 +197,11 @@ class UserController extends Controller
     }
 
     /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return UserResource
-     */
-    public function show(Request $request)
-    {
-        $nu_user = $request->input('NU_ECOMMERCE_USER');
-        $user = User::withCount([
-            'posts as totalPostsBuy' => function($posts){
-                $posts->where('post_type', 'buy');
-            },
-            'posts as totalPostsSell' => function($posts){
-                $posts->where('post_type', 'sell');
-            }
-        ])->find($nu_user['userId']);
-        return new UserResource($user);
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return UserResource
-     */
-    public function update(Request $request)
-    {
-        $nu_user = $request->input('NU_ECOMMERCE_USER');
-        $user = User::find($nu_user['userId']);
-
-        $user->update($request->except('NU_ECOMMERCE_USER'));
-        $user->status = 0;
-        $user->save();
-        return new UserResource($user);
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(Request $request)
-    {
-        $nu_user = $request->input('NU_ECOMMERCE_USER');
-        $user = User::find($nu_user['userId']);
-
-        if ($user->delete()){
-          return MakeHttpResponse(204,'Success', "Success delete user with id $nu_user[userId]");
-        }
-
-        return MakeHttpResponse(400,'Failed delete', "Failed to delete user with id $nu_user[userId]");
-    }
-
-    /**
      * Display all user's favorite posts.
      *
      * @return PostsResource
      */
-    public function getFavtorites(Request $request)
+    public function getFavorites(Request $request)
     {
         $nu_user = $request->input('NU_ECOMMERCE_USER');
         $page = $request->input('page', 1);
@@ -214,7 +215,7 @@ class UserController extends Controller
      *
      * @return PostsResource
      */
-    public function addFavtorites(Request $request, $postId)
+    public function addFavorites(Request $request, $postId)
     {
         $nu_user = $request->input('NU_ECOMMERCE_USER');
         $page = $request->input('page', 1);
@@ -231,7 +232,7 @@ class UserController extends Controller
      *
      * @return PostsResource
      */
-    public function removeFavtorites(Request $request, $postIds)
+    public function removeFavorites(Request $request, $postIds)
     {
         $nu_user = $request->input('NU_ECOMMERCE_USER');
         $user = User::find($nu_user['userId']);
@@ -242,5 +243,69 @@ class UserController extends Controller
             }
         }
         return MakeHttpResponse(400, 'Error', 'Error deleting favorite posts');
+    }
+
+    /**
+     * Display top favorite posts.
+     *
+     * @return PostsResource
+     */
+    public function getTopFavorites()
+    {
+        $posts = Post::withCount('favorite_users')->orderByDesc('favorite_users_count')->orderByDesc('created_at');
+        return new PostsResource($posts->take(10)->get());
+    }
+
+    /**
+     * Display all user's favorite posts.
+     *
+     * @return PostsResource
+     */
+    public function getMayLike(Request $request)
+    {
+        $nu_user = $request->input('NU_ECOMMERCE_USER');
+        $user = User::find($nu_user['userId']);
+        $frequentCategory = Post::where('user_id', $user->id)->select('category_id')->distinct()->get()->toArray();
+        $categories = array_map(create_function('$o', 'return $o["category_id"];'), $frequentCategory);
+        $posts = Post::withCount('favorite_users')
+            ->where('user_id', '!=', $user->id)
+            ->where('category_id', $categories)
+            ->orderByDesc('favorite_users_count')
+            ->orderByDesc('created_at');
+        return new PostsResource($posts->take(10)->get());
+    }
+
+    /**
+     * Display a user's expired posts.
+     *
+     * @return PostsResource
+     */
+    public function getExpired(Request $request)
+    {
+        $nu_user = $request->input('NU_ECOMMERCE_USER');
+        $user = User::find($nu_user['userId']);
+        $posts = Post::withExpired()->where([['status', '=', 0], ['user_id', '=', $user->id]])->get();
+        return new PostsResource($posts);
+    }
+
+    /**
+     * Active an expired post.
+     *
+     * @return PostResource
+     */
+    public function setActive(Request $request, $postId)
+    {
+        $nu_user = $request->input('NU_ECOMMERCE_USER');
+        $user = User::find($nu_user['userId']);
+        $post = Post::withExpired()->where([['id', '=', $postId],['status', '=', 0], ['user_id', '=', $user->id]])->first();
+        if (!$post) {
+            MakeHttpResponse(400,
+                'Not Found',
+                "Post Id $postId not found. Either because it's not belong to user or it's not expired."
+            );
+        }
+        $post->status = 1;
+        $post->save();
+        return new PostResource($post);
     }
 }
