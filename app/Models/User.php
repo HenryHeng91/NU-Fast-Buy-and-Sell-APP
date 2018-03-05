@@ -16,4 +16,9 @@ class User extends Model
     {
         return $this->belongsToMany('App\Models\Post', 'favorites', 'user_id', 'post_id');
     }
+
+    public function contactme()
+    {
+        return $this->belongsToMany('App\Models\Post', 'contact_mes', 'user_id', 'post_id');
+    }
 }

@@ -88,5 +88,11 @@ Route::group([ 'prefix' => 'search', 'namespace' => 'API', 'name' => 'search.'],
     Route::get('/sell', 'SearchController@searchSell')->name('searchSell');
 });
 
+//===== CONTACT ME =====
+Route::group([ 'middleware' => 'apiAuth', 'prefix' => 'contactme', 'namespace' => 'API', 'name' => 'contactme.'], function (){
+    Route::get('/{postId}', 'UserController@contactMe')->name('add');
+    Route::delete('/{postId}', 'UserController@removeContactMe')->name('remove');
+});
+
 
 Route::post('/logout', 'MainController@logout_acc');

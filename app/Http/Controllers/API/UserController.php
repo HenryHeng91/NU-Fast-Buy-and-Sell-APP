@@ -308,4 +308,41 @@ class UserController extends Controller
         $post->save();
         return new PostResource($post);
     }
+
+    /**
+     * Add current user to contact me list of a post.
+     *
+     * @return PostsResource
+     */
+    public function contactMe(Request $request, $postId)
+    {
+        $nu_user = $request->input('NU_ECOMMERCE_USER');
+        $user = User::find($nu_user['userId']);
+        $post = Post::find($postId);
+        if ($post == null || $user->posts->contains('id', $post->id)){
+            return MakeHttpResponse(400, 'Not found', "Post ID $postId not found in database.");
+        }
+        if($user->contactme->contains('id', $post->id)){
+            return MakeHttpResponse(400, 'Already exist', "User already exist in Post ID $postId's contact me list'.");
+        }
+        $post->contactmeUsers()->attach($user->id);
+        return MakeHttpResponse(200, 'Success', "Added user to contact me lists of post ID '$postId' successfully.");
+    }
+
+    /**
+     * Add current user to contact me list of a post.
+     *
+     * @return PostsResource
+     */
+    public function removeContactMe(Request $request, $postId)
+    {
+        $nu_user = $request->input('NU_ECOMMERCE_USER');
+        $user = User::find($nu_user['userId']);
+        $post = Post::find($postId);
+        if ($post == null || $user->posts->contains('id', $post->id)){
+            return MakeHttpResponse(400, 'Not found', "Post ID $postId not found in database.");
+        }
+        $post->contactmeUsers()->detach($user->id);
+        return MakeHttpResponse(200, 'Success', "Removed user from contact me lists of post ID '$postId' successfully.");
+    }
 }
