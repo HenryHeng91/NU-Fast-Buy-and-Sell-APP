@@ -82,6 +82,25 @@ class ImageUploadController extends Controller
         return MakeHttpResponse(200, 'Success', implode(';', $imageFileNames));
     }
 
+    /**Delete images
+     *
+     * @param Request $request
+     * @return PostResource
+     */
+    public function deletePostImage(Request $request, $imageName){
+        $destinationPath = public_path('images/posts/');
+
+        if (File::exists($destinationPath.'/'.$imageName)){
+            try{
+                File::delete($destinationPath.'/'.$imageName);
+                return MakeHttpResponse(204, 'Success', "Successfully delete image '$imageName'.");
+            }catch (Exception $e){
+                return MakeHttpResponse(400, 'Fail', $e->getMessage());
+            }
+        }
+        return MakeHttpResponse(400, 'Image not found', "Image '$imageName' not found.");
+    }
+
 
     /**Save an image to specific path
      *

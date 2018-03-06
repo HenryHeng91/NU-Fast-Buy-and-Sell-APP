@@ -79,6 +79,7 @@ Route::group(['prefix' => 'categoies', 'namespace' => 'API', 'name' => 'categoie
 Route::group([ 'middleware' => 'apiAuth', 'prefix' => 'images', 'namespace' => 'API', 'name' => 'images.'], function (){
     Route::post('/profile', 'ImageUploadController@uploadProfileImage')->name('profile');
     Route::post('/post', 'ImageUploadController@uploadPostImage')->name('post');
+    Route::delete('/post/{imageName}', 'ImageUploadController@deletePostImage')->name('delete-post-image');
 });
 
 //===== SEARCH =====
