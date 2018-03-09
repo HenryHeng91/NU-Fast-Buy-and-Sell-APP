@@ -66,7 +66,7 @@ Route::group([ 'prefix' => 'buys', 'namespace' => 'API', 'name' => 'buys.'], fun
 //===== ALL SELL POSTS =====
 Route::group([ 'prefix' => 'sells', 'namespace' => 'API', 'name' => 'sells.'], function (){
     Route::get('/', 'PostSellController@index')->name('getAllSells');
-    Route::get('/category/{catId}', 'PostSellController@index')->name('getAllSellsByCat');
+    Route::get('/category/{catId}', 'PostSellController@showAllByCategory')->name('getAllSellsByCat');
 });
 
 //===== ALL CATEGORIES =====
