@@ -101,6 +101,22 @@ class PostBuyController extends Controller
         return new PostsResource($posts);
     }
 
+    /**
+     * Display top view posts
+     *
+     * @return PostsResource
+     */
+    public function showTopView(Request $request)
+    {
+        $posts = Post::withCount('viewUsers')->where('post_type', 'buy')
+            ->orderByDesc('view_users_count')
+            ->orderByDesc('created_at')
+            ->take(10)
+            ->get();
+        return new PostsResource($posts);
+    }
+
+
 
     /**
      * Show the form for editing the specified resource.

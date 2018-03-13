@@ -61,12 +61,14 @@ Route::group([ 'prefix' => 'users', 'namespace' => 'API', 'name' => 'user.'], fu
 Route::group([ 'prefix' => 'buys', 'namespace' => 'API', 'name' => 'buys.'], function (){
     Route::get('/', 'PostBuyController@index')->name('getAllBuys');
     Route::get('/category/{catId}', 'PostBuyController@showAllByCategory')->name('getAllBuysByCat');
+    Route::get('/topview', 'PostBuyController@showTopView')->name('getTopView');
 });
 
 //===== ALL SELL POSTS =====
 Route::group([ 'prefix' => 'sells', 'namespace' => 'API', 'name' => 'sells.'], function (){
     Route::get('/', 'PostSellController@index')->name('getAllSells');
     Route::get('/category/{catId}', 'PostSellController@showAllByCategory')->name('getAllSellsByCat');
+    Route::get('/topview', 'PostSellController@showTopView')->name('getTopView');
 });
 
 //===== ALL CATEGORIES =====
@@ -93,6 +95,11 @@ Route::group([ 'prefix' => 'search', 'namespace' => 'API', 'name' => 'search.'],
 Route::group([ 'middleware' => 'apiAuth', 'prefix' => 'contactme', 'namespace' => 'API', 'name' => 'contactme.'], function (){
     Route::get('/{postId}', 'UserController@contactMe')->name('add');
     Route::delete('/{postId}', 'UserController@removeContactMe')->name('remove');
+});
+
+//===== POST VIEW =====
+Route::group([ 'middleware' => 'apiAuth', 'prefix' => 'view', 'namespace' => 'API', 'name' => 'view.'], function (){
+    Route::get('/{postId}', 'UserController@addView')->name('add');
 });
 
 

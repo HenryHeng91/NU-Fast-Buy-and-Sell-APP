@@ -41,6 +41,11 @@ class Post extends Model
         return $this->belongsToMany('App\Models\User', 'favorites', 'post_id', 'user_id');
     }
 
+    public function viewUsers()
+    {
+        return $this->belongsToMany('App\Models\User', 'post_view', 'post_id', 'user_id');
+    }
+
     public function contactmeUsers()
     {
         return $this->belongsToMany('App\Models\User', 'contact_mes', 'post_id', 'user_id');

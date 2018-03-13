@@ -30,6 +30,7 @@ class PostResource extends Resource
             'contactAddress'=> $this->contact_address,
             'contactMapCoordinate'  => $this->contact_address_map_coordinate,
             'favoriteCount' => $this->favorite_users()->count(),
+            'viewCount'     => $this->viewUsers()->count(),
             'contactMe'     => new UsersResource($this->contactmeUsers),
             'status'        => $this->status ? 'active' : 'expired',
             'createdDate'   => $this->created_at,

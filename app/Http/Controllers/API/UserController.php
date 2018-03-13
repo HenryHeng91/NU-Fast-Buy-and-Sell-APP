@@ -346,4 +346,22 @@ class UserController extends Controller
         $post->contactmeUsers()->detach($user->id);
         return MakeHttpResponse(200, 'Success', "Removed user from contact me lists of post ID '$postId' successfully.");
     }
+
+    /**
+     * Add a view to a post.
+     *
+     * @return PostsResource
+     */
+    public function addView(Request $request, $postId)
+    {
+        $nu_user = $request->input('NU_ECOMMERCE_USER');
+        $user = User::find($nu_user['userId']);
+        $post = Post::find($postId);
+        if ($post != null && !$post->viewUsers->contains('id', $user->id)){
+            $post->viewUsers()->attach($user->id);
+        }
+        return MakeHttpResponse(200, 'Success', "Added view to post ID '$postId' successfully.");
+
+    }
+
 }
