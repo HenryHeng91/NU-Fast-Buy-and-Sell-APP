@@ -90,15 +90,17 @@ class ImageUploadController extends Controller
     public function deletePostImage(Request $request, $imageName){
         $destinationPath = public_path('images/posts/');
 
-        if (File::exists($destinationPath.'/'.$imageName)){
-            try{
-                File::delete($destinationPath.'/'.$imageName);
-                return MakeHttpResponse(204, 'Success', "Successfully delete image '$imageName'.");
-            }catch (Exception $e){
-                return MakeHttpResponse(400, 'Fail', $e->getMessage());
+        $images = explode(',', trim($imageName));
+        foreach ($images as $image){
+            if (File::exists($destinationPath.'/'.$image)){
+                try{
+                    File::delete($destinationPath.'/'.$image);
+                }catch (Exception $e){
+                    return MakeHttpResponse(400, 'Fail', $e->getMessage());
+                }
             }
         }
-        return MakeHttpResponse(400, 'Image not found', "Image '$imageName' not found.");
+        return MakeHttpResponse(204, 'Success', "Successfully delete image '$imageName'.");
     }
 
 
