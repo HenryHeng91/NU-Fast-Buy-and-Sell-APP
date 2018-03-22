@@ -97,7 +97,14 @@ class UserController extends Controller
     public function update(Request $request)
     {
         $nu_user = $request->input('NU_ECOMMERCE_USER');
-        $user = User::find($nu_user['userId']);
+        $user = User::withCount([
+            'posts as totalPostsBuy' => function($posts){
+                $posts->where('post_type', 'buy');
+            },
+            'posts as totalPostsSell' => function($posts){
+                $posts->where('post_type', 'sell');
+            }
+        ])->find($nu_user['userId']);
 
         $user->update($request->except('NU_ECOMMERCE_USER'));
         $user->status = 0;
