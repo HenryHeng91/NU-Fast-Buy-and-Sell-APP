@@ -4,7 +4,7 @@ namespace Tests\Unit;
 
 use Tests\TestCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-
+use OneSignal;
 class ExampleTest extends TestCase
 {
     /**
@@ -14,6 +14,7 @@ class ExampleTest extends TestCase
      */
     public function testBasicTest()
     {
+        OneSignal::sendNotificationToAll("Some Message");
         $this->assertTrue(true);
     }
 }
