@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\API;
 
-use App\Http\Resources\SearchesResource;
+use App\Http\Resources\PostsResource;
 use App\Http\Resources\SearchResource;
 use App\Models\Post;
 use Illuminate\Http\Request;
@@ -13,7 +13,7 @@ class SearchController extends Controller
     /**
      * Display a listing of the search posts.
      *
-     * @return SearchesResource
+     * @return PostsResource
      */
     public function index(Request $request)
     {
@@ -23,13 +23,13 @@ class SearchController extends Controller
             ->orWhere('description', 'like', "%$string%")
             ->orderByDesc('favorite_users_count')
             ->orderByDesc('created_at');
-        return new SearchesResource($posts->paginate(14));
+        return new PostsResource($posts->paginate(14));
     }
     
     /**
      * Display a listing of the search buy posts.
      *
-     * @return SearchesResource
+     * @return PostsResource
      */
     public function searchBuy(Request $request)
     {
@@ -42,13 +42,13 @@ class SearchController extends Controller
             })
             ->orderByDesc('favorite_users_count')
             ->orderByDesc('created_at');
-        return new SearchesResource($posts->paginate());
+        return new PostsResource($posts->paginate());
     }
 
     /**
      * Display a listing of the search sell posts.
      *
-     * @return SearchesResource
+     * @return PostsResource
      */
     public function searchSell(Request $request)
     {
@@ -61,6 +61,6 @@ class SearchController extends Controller
             })
             ->orderByDesc('favorite_users_count')
             ->orderByDesc('created_at');
-        return new SearchesResource($posts->paginate());
+        return new PostsResource($posts->paginate());
     }
 }
