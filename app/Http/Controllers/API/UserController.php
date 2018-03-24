@@ -307,7 +307,7 @@ class UserController extends Controller
         $user = User::find($nu_user['userId']);
         $post = Post::withExpired()->where([['id', '=', $postId],['status', '=', 0], ['user_id', '=', $user->id]])->first();
         if (!$post) {
-            MakeHttpResponse(400,
+            return MakeHttpResponse(400,
                 'Not Found',
                 "Post Id $postId not found. Either because it's not belong to user or it's not expired."
             );
