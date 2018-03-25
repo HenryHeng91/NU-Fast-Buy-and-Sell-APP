@@ -90,7 +90,7 @@ class ImageUploadController extends Controller
     public function deletePostImage(Request $request, $imageName){
         $destinationPath = public_path('images/posts/');
 
-        $images = explode(',', trim($imageNapame));
+        $images = explode(',', trim($imageName));
         foreach ($images as $image){
             if (File::exists($destinationPath.'/'.$image)){
                 try{
