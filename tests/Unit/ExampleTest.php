@@ -17,4 +17,19 @@ class ExampleTest extends TestCase
         OneSignal::sendNotificationToAll("Some Message");
         $this->assertTrue(true);
     }
+
+    /**
+     * A basic test example.
+     *
+     * @return void
+     */
+    public function testOnesignalSendByTag()
+    {
+        OneSignal::sendNotificationUsingTags("Test send by tag", array(
+            ["field" => "tag", "key" => "user_id", "relation" => "=", "value" => "1"],
+            ["operator" => "OR"],
+            ["field" => "tag", "key" => "user_id", "relation" => "=", "value" => "2"],
+        ), $url = null, $data = null, $buttons = null, $schedule = null);
+        $this->assertTrue(true);
+    }
 }

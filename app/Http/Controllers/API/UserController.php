@@ -14,6 +14,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Mockery\Exception;
+use OneSignal;
 
 class UserController extends Controller
 {
@@ -145,6 +146,22 @@ class UserController extends Controller
         $validate = Validator::make($input, $post->getValidationArray());
         if ($validate->passes()){
             $newpost = $user->posts()->save($post);
+
+            //Notification to user
+            $users_to_alert = User::whereHas('posts', function ($p) use ($newpost) {
+                $p->where('category_id', $newpost->category_id);
+            })->get();
+
+            $query = [];
+            $lastElement = end($users_to_alert)[0];
+            foreach ($users_to_alert as $k => $v){
+                array_push($query, ["field" => "tag", "key" => "user_id", "relation" => "=", "value" => $v->id]);
+                if ($v != $lastElement){
+                    array_push($query, ["operator" => "OR"]);
+                }
+            }
+            OneSignal::sendNotificationUsingTags($newpost->title, $query, $url = null, $data = null, $buttons = null, $schedule = null);
+
             return new PostResource($newpost);
         } else {
             return MakeHttpResponse(400, 'Fail', $validate->errors()->all());
@@ -334,6 +351,11 @@ class UserController extends Controller
             return MakeHttpResponse(400, 'Already exist', "User already exist in Post ID $postId's contact me list'.");
         }
         $post->contactmeUsers()->attach($user->id);
+
+        OneSignal::sendNotificationUsingTags("$user->last_name $user->first_name want to contact for your product post", array(
+            ["field" => "tag", "key" => "user_id", "relation" => "=", "value" => $post->user->id]
+        ), $url = null, $data = null, $buttons = null, $schedule = null);
+
         return MakeHttpResponse(200, 'Success', "Added user to contact me lists of post ID '$postId' successfully.");
     }
 
