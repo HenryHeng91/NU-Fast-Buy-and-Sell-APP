@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Post;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -100,6 +101,38 @@ Route::group([ 'middleware' => 'apiAuth', 'prefix' => 'contactme', 'namespace' =
 //===== POST VIEW =====
 Route::group([ 'middleware' => 'apiAuth', 'prefix' => 'view', 'namespace' => 'API', 'name' => 'view.'], function (){
     Route::get('/{postId}', 'UserController@addView')->name('add');
+});
+
+//===== TEST LINK =====
+Route::group([ 'middleware' => 'apiAuth', 'prefix' => 'test', 'namespace' => 'API', 'name' => 'test.'], function (){
+    Route::get('/sendnotification/{userId}', function ($userId, Request $request){
+        $nu_user = $request->input('NU_ECOMMERCE_USER')['userId'];
+        $requestUser = User::find($nu_user);
+        if ($requestUser == null || $requestUser->role != 4){
+            return MakeHttpResponse(401, 'Unauthorized', 'Only admin user can access');
+        }
+        OneSignal::sendNotificationUsingTags("Testing notification to user id $userId", array(
+            ["field" => "tag", "key" => "user_id", "relation" => "=", "value" => $userId]
+        ), $url = null, $data = null, $buttons = null, $schedule = null);
+        return MakeHttpResponse(200, 'Success', 'Adding notification successfully.');
+    });
+
+    Route::get('/makepostexpire/{postId}', function ($postId, Request $request){
+        $nu_user = $request->input('NU_ECOMMERCE_USER')['userId'];
+        $requestUser = User::find($nu_user);
+        if ($requestUser == null || $requestUser->role != 4){
+            return MakeHttpResponse(401, 'Unauthorized', 'Only admin user can access');
+        }
+        $post = Post::find($postId);
+        if ($post == null) {
+            return MakeHttpResponse(400, 'No post found', "Post with id '$postId' not found in database!");
+        }
+        $post->status = 0;
+        $post->save();
+        return MakeHttpResponse(200, 'Success', "Set Post id '$postId' to expired.");
+    });
+
+
 });
 
 

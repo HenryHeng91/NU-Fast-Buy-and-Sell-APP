@@ -153,11 +153,11 @@ class UserController extends Controller
             })->get();
 
             $query = [];
-            $lastElement = end($users_to_alert)[0];
+            $lastElement = $users_to_alert->last();
             foreach ($users_to_alert as $k => $v){
-                array_push($query, ["field" => "tag", "key" => "user_id", "relation" => "=", "value" => $v->id]);
+                array_push($query, array("field" => "tag", "key" => "user_id", "relation" => "=", "value" => $v->id));
                 if ($v != $lastElement){
-                    array_push($query, ["operator" => "OR"]);
+                    array_push($query, array("operator" => "OR"));
                 }
             }
             OneSignal::sendNotificationUsingTags($newpost->title, $query, $url = null, $data = null, $buttons = null, $schedule = null);
