@@ -10,10 +10,12 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Validator;
+use Intervention\Image\Facades\Image;
 use Mockery\Exception;
 
 class ImageUploadController extends Controller
 {
+    private $defaultHeight = 960;
 
     /**Upload user profile pic and set profile pic for specific user
      *
@@ -113,7 +115,11 @@ class ImageUploadController extends Controller
      */
     private function saveImageToPath($imageFile, $destinationPath, $imagePrefix = ''){
         $filename = $imagePrefix.uniqid().'.'.$imageFile->getClientOriginalExtension();
-        $imageFile->move($destinationPath, $filename);
+        $imageFile = Image::make($imageFile->getRealPath())->resize(null, $this->defaultHeight, function ($constraint){
+            $constraint->aspectRatio();
+            $constraint->upsize();
+        });
+        $imageFile->save($destinationPath . $filename);
         return $filename;
     }
 }
