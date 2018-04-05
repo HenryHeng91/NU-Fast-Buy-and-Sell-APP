@@ -148,7 +148,8 @@ class UserController extends Controller
             $newpost = $user->posts()->save($post);
 
             //Notification to user
-            $users_to_alert = User::whereHas('posts', function ($p) use ($newpost) {
+            $users_to_alert = User::where('id', '!=', $nu_user['userId'])
+            ->whereHas('posts', function ($p) use ($newpost) {
                 $p->where('category_id', $newpost->category_id);
             })->get();
 
@@ -160,7 +161,13 @@ class UserController extends Controller
                     array_push($query, array("operator" => "OR"));
                 }
             }
-            OneSignal::sendNotificationUsingTags($newpost->title, $query, $url = null, $data = null, $buttons = null, $schedule = null);
+            OneSignal::sendNotificationUsingTags(
+                "We found items that may interest you!",
+                $query, $url = null,
+                $data = array("postId" => $newpost->id, "notificationType" => "postCreate"),
+                $buttons = null,
+                $schedule = null
+            );
 
             return new PostResource($newpost);
         } else {
@@ -352,9 +359,9 @@ class UserController extends Controller
         }
         $post->contactmeUsers()->attach($user->id);
 
-        OneSignal::sendNotificationUsingTags("$user->last_name $user->first_name want to contact for your product post", array(
+        OneSignal::sendNotificationUsingTags("$user->last_name $user->first_name wants to contact for your product post", array(
             ["field" => "tag", "key" => "user_id", "relation" => "=", "value" => $post->user->id]
-        ), $url = null, $data = null, $buttons = null, $schedule = null);
+        ), $url = null, $data = array("postId" => $post->id, "notificationType" => "postContact"), $buttons = null, $schedule = null);
 
         return MakeHttpResponse(200, 'Success', "Added user to contact me lists of post ID '$postId' successfully.");
     }
