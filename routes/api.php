@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Resources\BannersResource;
+use App\Models\Banner;
 use App\Models\Post;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -101,6 +103,14 @@ Route::group([ 'middleware' => 'apiAuth', 'prefix' => 'contactme', 'namespace' =
 //===== POST VIEW =====
 Route::group([ 'middleware' => 'apiAuth', 'prefix' => 'view', 'namespace' => 'API', 'name' => 'view.'], function (){
     Route::get('/{postId}', 'UserController@addView')->name('add');
+});
+
+//===== BANNER =====
+Route::group([ 'prefix' => 'banner', 'namespace' => 'API', 'name' => 'banner.'], function (){
+    Route::get('/', function (){
+        $banners = Banner::where('status', 1)->orderByDesc('created_at')->get();
+        return new BannersResource($banners);
+    })->name('get');
 });
 
 //===== TEST LINK =====
