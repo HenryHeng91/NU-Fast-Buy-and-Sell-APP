@@ -51,13 +51,20 @@ Route::group(['middleware' => 'apiAuth', 'prefix' => 'user', 'namespace' => 'API
     Route::get('/favorites/{postId}', 'UserController@addFavorites')->name('add-favorites');
     Route::delete('/favorites/{postIds}', 'UserController@removeFavorites')->name('delete-favorites');
 
-
-
 });
 
 //===== ALL USERS =====
 Route::group([ 'prefix' => 'users', 'namespace' => 'API', 'name' => 'user.'], function (){
     Route::get('/', 'UserController@index')->name('getAllUsers');
+});
+
+//===== ALL POSTS =====
+Route::group([ 'prefix' => 'posts', 'namespace' => 'API', 'name' => 'posts.'], function (){
+    Route::get('/', 'PostController@index')->name('getAllPosts');
+    Route::get('/{id}', 'PostController@show')->name('getSinglePost');
+    Route::get('/user/{user}', 'PostController@showUserPosts')->name('getUserAllPosts');
+    Route::get('/category/{catId}', 'PostController@showAllByCategory')->name('getAllPostsByCat');
+    Route::get('/category/{catId}/user/{user}', 'PostController@showUserPostsByCategory')->name('getAllUserPostsByCat');
 });
 
 //===== ALL BUY POSTS =====
