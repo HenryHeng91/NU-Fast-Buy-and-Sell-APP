@@ -164,7 +164,7 @@ class UserController extends Controller
             OneSignal::sendNotificationUsingTags(
                 "We found items that may interest you!",
                 $query, $url = null,
-                $data = array("postId" => $newpost->id, "notificationType" => "postCreate"),
+                $data = array("postId" => $newpost->id, "notificationType" => "postCreate", "title" => "We found items that may interest you!"),
                 $buttons = null,
                 $schedule = null
             );
@@ -361,7 +361,7 @@ class UserController extends Controller
 
         OneSignal::sendNotificationUsingTags("$user->last_name $user->first_name wants to contact for your product post", array(
             ["field" => "tag", "key" => "user_id", "relation" => "=", "value" => $post->user->id]
-        ), $url = null, $data = array("postId" => $post->id, "notificationType" => "postContact"), $buttons = null, $schedule = null);
+        ), $url = null, $data = array("postId" => $post->id, "notificationType" => "postContact", "title" => "$user->last_name $user->first_name wants to contact for your product post"), $buttons = null, $schedule = null);
 
         return MakeHttpResponse(200, 'Success', "Added user to contact me lists of post ID '$postId' successfully.");
     }
