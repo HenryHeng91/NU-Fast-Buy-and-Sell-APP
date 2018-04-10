@@ -30,11 +30,7 @@ class CategoryController extends Controller
         foreach ($categories as $category){
             $categoryChildren = Category::select(['id', 'category_name', 'category_name_khmer', 'category_image'])
                 ->where('category_parent', $category->id)->get();
-                $category->categoryChildren = $categoryChildren->map(function ($item) {
-                    if (!$item->category_image) return $item;
-                    $item->category_image = asset(env('CATEGORY_PATH')).'/'.$item->category_image;
-                    return $item;
-                });
+                $category->categoryChildren = $categoryChildren;
         }
         return new CategoriesResource($categories);
 
